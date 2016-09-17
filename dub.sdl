@@ -1,0 +1,23 @@
+name "restexample"
+description "REST example"
+authors "deviator"
+copyright "Copyright © 2016, deviator"
+license "MIT"
+
+targetType "executable"
+
+dependency "vibe-d" version="~>0.7.29"
+
+configuration "default" {
+    targetName "prog"
+}
+
+configuration "server" {
+    targetName "progserver"
+    versions "server" "VibeDefaultMain"
+}
+
+configuration "client" {
+    targetName "progclient"
+    versions "client"
+}
