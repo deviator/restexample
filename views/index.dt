@@ -1,0 +1,44 @@
+html
+  head
+    title Пример REST
+    style.
+      .label { display: inline-block; width: 20px; }
+      input { width: 100px; }
+    script(src = "model.js")
+    script.
+      function getPoints() {
+        var ax = parseFloat(document.getElementById('ax').value);
+        var ay = parseFloat(document.getElementById('ay').value);
+        var bx = parseFloat(document.getElementById('bx').value);
+        var by = parseFloat(document.getElementById('by').value);
+        var cx = parseFloat(document.getElementById('cx').value);
+        var cy = parseFloat(document.getElementById('cy').value);
+
+        return [{x:ax, y:ay}, {x:bx, y:by}, {x:cx, y:cy}];
+      }
+
+      function calcTriangleArea() {
+        var p = getPoints();
+        IModel.triangleAreaByPoints(p[0], p[1], p[2], function(r) {
+          document.getElementById('area').innerHTML = r;
+        });
+      }
+
+  body
+    h1 Расчёт площади треугольника
+    div
+      div.label A:
+      input#ax(placehoder="a.x",value="1")
+      input#ay(placehoder="a.y",value="2")
+    div
+      div.label B:
+      input#bx(placehoder="b.x",value="2")
+      input#by(placehoder="b.y",value="1")
+    div
+      div.label C:
+      input#cx(placehoder="c.x",value="0")
+      input#cy(placehoder="c.y",value="0")
+    div
+    button(onclick="calcTriangleArea()") Расчитать
+    p Площадь:
+      span#area

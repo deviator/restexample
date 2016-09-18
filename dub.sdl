@@ -6,7 +6,7 @@ license "MIT"
 
 targetType "executable"
 
-dependency "vibe-d" version="~>0.7.29"
+dependency "vibe-d" version="~>0.7.30-beta.1"
 
 configuration "default" {
     targetName "prog"
