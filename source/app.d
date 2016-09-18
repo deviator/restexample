@@ -2,19 +2,18 @@ import std.stdio;
 
 import model;
 
-import vibe.d;
-
 version (server)
 {
+    import vibe.d;
     shared static this()
     {
         auto router = new URLRouter;
 
         router.registerRestInterface(new Model);
 
-        auto restset = new RestInterfaceSettings;
-        restset.baseURL = URL("http://127.0.0.1:8080/");
-        router.get("/model.js", serveRestJSClient!IModel(restset));
+        //auto restset = new RestInterfaceSettings;
+        //restset.baseURL = URL();
+        router.get("/model.js", serveRestJSClient!IModel("http://127.0.0.1:8080/"));
         router.get("/", staticTemplate!"index.dt");
 
         auto set = new HTTPServerSettings;
@@ -48,16 +47,25 @@ else
         auto c = Point(4, 1);
 
         version (client)
+        {
+            import vibe.web.rest;
             auto m = new RestInterfaceClient!IModel("http://127.0.0.1:8080/");
+        }
         else // единое приложение
             auto m = new Model;
 
         writeln(m.triangleAreaByPoints(a, b, c));
-        writeln(m.op.add(a,b));
-        writeln(m.op.sub(c,a));
-        writeln(m.calculator.names);
-        writeln(m.calculator["center"].calc(a, b, c));
-        writeln(m.calculator2.calc("center", a, b, c));
-        writeln(m.calculator["left"].calc(a, b, c));
+        writeln(m.op.sum(a,b));
+        writeln(m.op.dif(c,a));
+        writeln(m.calculator2.names);
+        writeln(m.calculator2.calc("center", a, b, c, m.op.sum(a,b)));
+        writeln(m.calculator2.calc("left", a, b, c));
+
+        version (client)
+        {
+            writeln(m.calculator.names);
+            writeln(m.calculator["center"].calc(a, b, c, m.op.sum(a,b)));
+            writeln(m.calculator["left"].calc(a, b, c));
+        }
     }
 }

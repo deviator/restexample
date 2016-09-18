@@ -3,9 +3,25 @@ module model;
 import std.math;
 import std.exception;
 
-import vibe.web.rest;
-import vibe.http.common;
-import vibe.data.json;
+version (client) version = isrest;
+else version(server) version = isrest;
+
+version (isrest)
+{
+    import vibe.web.rest;
+    import vibe.http.common;
+    import vibe.data.json;
+}
+else
+{
+    enum HTTPMethod
+    {
+        GET,
+        POST
+    }
+
+    struct method { HTTPMethod meth; }
+}
 
 struct Point
 {
@@ -63,16 +79,16 @@ class PointCalculator : IPointCalculator
 interface IPointBinOp
 {
     @method(HTTPMethod.GET)
-    Point add(Point a, Point b);
+    Point sum(Point a, Point b);
 
     @method(HTTPMethod.GET)
-    Point sub(Point a, Point b);
+    Point dif(Point a, Point b);
 }
 
 class PointBinOp : IPointBinOp
 {
-    Point add(Point a, Point b) { return Point(a.x + b.x, a.y + b.y); }
-    Point sub(Point a, Point b) { return Point(a.x - b.x, a.y - b.y); }
+    Point sum(Point a, Point b) { return Point(a.x + b.x, a.y + b.y); }
+    Point dif(Point a, Point b) { return Point(a.x - b.x, a.y - b.y); }
 }
 
 interface IModel
@@ -83,8 +99,11 @@ interface IModel
     @method(HTTPMethod.POST)
     float triangleAreaByPoints(Point a, Point b, Point c);
 
-    @method(HTTPMethod.GET)
-    Collection!IPointCalculator calculator();
+    version(isrest)
+    {
+        @method(HTTPMethod.GET)
+        Collection!IPointCalculator calculator();
+    }
 
     @method(HTTPMethod.GET)
     IPointCalculator calculator2();
@@ -118,9 +137,12 @@ class Model : IModel
         return triangleAreaByLengths(ab, ac, bc);
     }
 
-    Collection!IPointCalculator calculator()
+    version(isrest)
     {
-        return Collection!IPointCalculator(m_pcalc);
+        Collection!IPointCalculator calculator()
+        {
+            return Collection!IPointCalculator(m_pcalc);
+        }
     }
 
     IPointCalculator calculator2()
