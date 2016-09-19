@@ -11,13 +11,13 @@ configuration "default" {
 }
 
 configuration "server" {
-    dependency "vibe-d" path="/home/deviator/workspace/vibe.d/"
+    dependency "vibe-d" version="~>0.7.30-beta.1"
     targetName "progserver"
     versions "server" "VibeDefaultMain"
 }
 
 configuration "client" {
-    dependency "vibe-d" path="/home/deviator/workspace/vibe.d/"
+    dependency "vibe-d" version="~>0.7.30-beta.1"
     targetName "progclient"
     versions "client"
 }
